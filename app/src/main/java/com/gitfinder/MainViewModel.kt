@@ -10,23 +10,32 @@ import retrofit2.Response
 
 class MainViewModel: ViewModel() {
 
-    private val _users = MutableLiveData<UserItem>()
-    val users :LiveData<UserItem> = _users
+    private val _users = MutableLiveData<List<UserItem?>>()
+    val users :LiveData<List<UserItem?>> = _users
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _userDetail = MutableLiveData<UserDetailResponse>()
+    val userDetail: LiveData<UserDetailResponse> = _userDetail
+
+    private val _followersDetail = MutableLiveData<FollowersResponse>()
+    val followersDetail: LiveData<FollowersResponse> = _followersDetail
+
+    private val _followingDetail = MutableLiveData<FollowingResponse>()
+    val followingDetail: LiveData<FollowingResponse> = _followingDetail
+
     companion object {
-        private const val TAG = "MainViewModel"
+        private const val TAG = "Thoriq 2"
     }
 
     init {
-        searchUsers()
+        searchUsers("thoriqzs25")
     }
 
-    private fun searchUsers() {
+     fun searchUsers(q: String) {
         _isLoading.value = true
-        val client = ApiConfig.getApiService().searchUser()
+        val client = ApiConfig.getApiService().searchUser(q)
         client.enqueue(object : Callback<SearchResponse> {
             override fun onResponse(
                 call: Call<SearchResponse>,
@@ -34,10 +43,13 @@ class MainViewModel: ViewModel() {
             ) {
                 _isLoading.value = false
                 if (response.isSuccessful) {
-                    Log.d(TAG, "onResponse: ${response.body()}")
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        _users.value = responseBody.items
+                    }
                 }
                 else {
-                    Log.d(TAG, "onServerFailed: ${response.message()}")
+                    Log.d(TAG, "onResponseFail: ${response.message()}")
                 }
             }
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {

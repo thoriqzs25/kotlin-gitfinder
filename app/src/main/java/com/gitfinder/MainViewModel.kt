@@ -16,17 +16,8 @@ class MainViewModel: ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _userDetail = MutableLiveData<UserDetailResponse>()
-    val userDetail: LiveData<UserDetailResponse> = _userDetail
-
-    private val _followersDetail = MutableLiveData<FollowersResponse>()
-    val followersDetail: LiveData<FollowersResponse> = _followersDetail
-
-    private val _followingDetail = MutableLiveData<FollowingResponse>()
-    val followingDetail: LiveData<FollowingResponse> = _followingDetail
-
     companion object {
-        private const val TAG = "Thoriq 2"
+        private const val TAG = "mainviewmodel"
     }
 
     init {

@@ -2,6 +2,7 @@ package com.gitfinder
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +18,7 @@ import com.gitfinder.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = "Thoriq"
+        private val TAG = "mainactivity"
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -74,7 +75,9 @@ class MainActivity : AppCompatActivity() {
     private fun setUsersListData(users: List<UserItem>) {
 
         val adapter = UsersAdapter(users, onClick = {
-
+            val intent = Intent(this@MainActivity, DetailActivity::class.java)
+            intent.putExtra("q", it.login)
+            startActivity(intent)
         })
         binding.rvUserList.adapter = adapter
 

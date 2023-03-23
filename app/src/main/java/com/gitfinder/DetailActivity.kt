@@ -43,6 +43,24 @@ class DetailActivity : AppCompatActivity() {
 
         detailViewModel.userDetail.observe(this) {
             setUserDetail(it)
+            if (username != it.login) {
+                detailViewModel.getFollow("followers", it.login!!)
+            }
+
+            val sectionPagerAdapter = SectionPagerAdapter(this, it.login!!)
+            binding.viewPager.adapter = sectionPagerAdapter
+
+            TabLayoutMediator(binding.tabs, binding.viewPager) {tab, position ->
+                val currTab = resources.getString(TAB_TITLES[position])
+                val count = if (currTab == "followers") {
+                    detailViewModel.userDetail.value?.followers
+                } else {
+                    detailViewModel.userDetail.value?.following
+                }
+
+                tab.text = "$count $currTab"
+            }.attach()
+            supportActionBar?.elevation = 0f
         }
 
         detailViewModel.isLoading.observe(this) { loading ->
@@ -52,26 +70,9 @@ class DetailActivity : AppCompatActivity() {
         if (username != null) {
             detailViewModel.getDetail(username)
         }
-
-        val sectionPagerAdapter = SectionPagerAdapter(this)
-        binding.viewPager.adapter = sectionPagerAdapter
-
-        TabLayoutMediator(binding.tabs, binding.viewPager) {tab, position ->
-            val currTab = resources.getString(TAB_TITLES[position])
-            Log.d(TAG, "onCreate: $currTab ")
-            val count = if (currTab == "followers") {
-                20
-            } else {
-                30
-            }
-
-            tab.text = "$count $currTab"
-        }.attach()
-        supportActionBar?.elevation = 0f
     }
 
     private fun setUserDetail(detail: UserDetailResponse) {
-        Log.d(TAG, "setUserDetail: ${detail.login}")
         binding.centertext.text = detail.login.toString()
         Glide.with(this)
             .load(detail.avatarUrl)

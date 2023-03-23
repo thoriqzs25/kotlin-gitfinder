@@ -51,6 +51,7 @@ class DetailViewModel : ViewModel() {
     }
 
     fun getFollow(type: String, username: String) {
+        Log.d(TAG, "getFollow: trying to fetch $type")
         _isLoading.value = true
         val client = if (type == "followers") {
             ApiConfig.getApiService().getFollowers(username)
@@ -77,7 +78,7 @@ class DetailViewModel : ViewModel() {
 
             override fun onFailure(call: Call<List<FollowResponseItem>>, t: Throwable) {
                 _isLoading.value = false
-                Log.d(TAG, "onFailure: ${t.message} ini")
+                Log.d(TAG, "onFailure: ${t.message}")
             }
 
         })

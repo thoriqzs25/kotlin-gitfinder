@@ -6,10 +6,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.gitfinder.databinding.UserCardBinding
 
-class FollowAdapter(private val listFollow: List<FollowResponseItem>) : RecyclerView.Adapter<FollowAdapter.ViewHolder>() {
+class FollowAdapter(
+    private val listFollow: List<FollowResponseItem>,
+    private val onClick: (FollowResponseItem) -> Unit
+) : RecyclerView.Adapter<FollowAdapter.ViewHolder>() {
 
     inner class ViewHolder(var binding: UserCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(user: FollowResponseItem) {
+            itemView.setOnClickListener {
+                onClick(user)
+            }
             binding.userName.text = user.login
             Glide.with(binding.root)
                 .load(user.avatarUrl)
@@ -18,7 +24,8 @@ class FollowAdapter(private val listFollow: List<FollowResponseItem>) : Recycler
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        val binding = UserCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        val binding =
+            UserCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
         return ViewHolder(binding)
     }
 

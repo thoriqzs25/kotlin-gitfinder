@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.gitfinder.databinding.ActivityDetailBinding
 import com.gitfinder.databinding.ActivityMainBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -45,6 +46,7 @@ class DetailActivity : AppCompatActivity() {
 
         detailViewModel.userDetail.observe(this) {
             setUserDetail(it)
+            binding.tvErrorDisplay.visibility = View.GONE
             if (username != it.login) {
                 detailViewModel.getFollow("followers", it.login!!)
             }
@@ -71,6 +73,20 @@ class DetailActivity : AppCompatActivity() {
             showLoading(loading)
         }
 
+        detailViewModel.errorMsg.observe(this) {msg ->
+            msg.getContentIfNotHandled()?.let {
+                binding.tvErrorDisplay.visibility = View.VISIBLE
+                binding.tvErrorDisplay.text = it
+                val snackbar = Snackbar.make(
+                    window.decorView.rootView,
+                    it,
+                    Snackbar.LENGTH_SHORT
+                )
+                snackbar.anchorView = binding.botView
+                snackbar.show()
+            }
+        }
+
         if (username != null) {
             detailViewModel.getDetail(username)
         }
@@ -91,6 +107,7 @@ class DetailActivity : AppCompatActivity() {
         binding.ivUserimage.borderWidth = 2
         Glide.with(this)
             .load(detail.avatarUrl)
+            .placeholder(R.drawable.account_circle)
             .into(binding.ivUserimage)
 
         binding.icGithub.setOnClickListener {

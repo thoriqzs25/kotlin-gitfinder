@@ -16,6 +16,9 @@ class MainViewModel: ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _errorMsg = MutableLiveData<Event<String>>()
+    val errorMsg: LiveData<Event<String>> = _errorMsg
+
     companion object {
         private const val TAG = "mainviewmodel"
     }
@@ -36,11 +39,13 @@ class MainViewModel: ViewModel() {
                     }
                 }
                 else {
+                    _errorMsg.value = Event("Server Error, ${response.message()}")
                     Log.d(TAG, "onResponseFail: ${response.message()}")
                 }
             }
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
                 _isLoading.value = false
+                _errorMsg.value = Event("Error, cek koneksi anda!")
                 Log.d(TAG, "onFailure: ${t.message}")
             }
         })

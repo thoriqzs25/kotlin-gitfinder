@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gitfinder.databinding.ActivityMainBinding
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,6 +44,18 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.isLoading.observe(this) { loading ->
             showLoading(loading)
+        }
+
+        mainViewModel.errorMsg.observe(this) {msg ->
+            msg.getContentIfNotHandled()?.let {
+                val snackbar = Snackbar.make(
+                    window.decorView.rootView,
+                    it,
+                    Snackbar.LENGTH_SHORT
+                )
+                snackbar.anchorView = binding.botView
+                snackbar.show()
+            }
         }
 
         val layoutManager = LinearLayoutManager(this)

@@ -1,6 +1,7 @@
 package com.gitfinder
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,6 +19,9 @@ class DetailViewModel : ViewModel() {
 
     private val _followList = MutableLiveData<List<FollowResponseItem?>>()
     val followList: LiveData<List<FollowResponseItem?>> = _followList
+
+    private val _errorMsg = MutableLiveData<Event<String>>()
+    val errorMsg: LiveData<Event<String>> = _errorMsg
 
     companion object {
         private const val TAG = "detailviewmodelthoriq"
@@ -38,12 +42,14 @@ class DetailViewModel : ViewModel() {
                         _userDetail.value = responseBody
                     }
                 } else {
+                    _errorMsg.value = Event("Server Error, ${response.message()}")
                     Log.d(TAG, "onResponseFail: ${response.message()} ")
                 }
             }
 
             override fun onFailure(call: Call<UserDetailResponse>, t: Throwable) {
                 _isLoading.value = false
+                _errorMsg.value = Event("Error, cek koneksi anda!")
                 Log.d(TAG, "onFailure: ${t.message}")
             }
 
@@ -51,7 +57,11 @@ class DetailViewModel : ViewModel() {
     }
 
     fun getFollow(type: String, username: String) {
-        Log.d(TAG, "getFollow: trying to fetch $type")
+        if (followList != null) {
+            Log.d(TAG, "getFollow: not null")
+        } else {
+            Log.d(TAG, "getFollow: null!")
+        }
         _isLoading.value = true
         val client = if (type == "followers") {
             ApiConfig.getApiService().getFollowers(username)
@@ -66,18 +76,19 @@ class DetailViewModel : ViewModel() {
             ) {
                 _isLoading.value = false
                 if (response.isSuccessful) {
-//                    Log.d(TAG, "onResponse: ")
                     val responseBody = response.body()
                     if (responseBody != null) {
                         _followList.value = responseBody
                     }
                 } else {
+                    _errorMsg.value = Event("Server Error, ${response.message()}")
                     Log.d(TAG, "onResponseFail: ${response.message()} ")
                 }
             }
 
             override fun onFailure(call: Call<List<FollowResponseItem>>, t: Throwable) {
                 _isLoading.value = false
+                _errorMsg.value = Event("Error, cek koneksi anda!")
                 Log.d(TAG, "onFailure: ${t.message}")
             }
 

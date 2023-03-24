@@ -19,6 +19,7 @@ class FollowAdapter(
             binding.userName.text = user.login
             Glide.with(binding.root)
                 .load(user.avatarUrl)
+                .placeholder(R.drawable.account_circle)
                 .into(binding.userImage)
         }
     }

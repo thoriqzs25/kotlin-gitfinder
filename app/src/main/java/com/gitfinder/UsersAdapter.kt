@@ -18,6 +18,7 @@ class UsersAdapter(private val listUser: List<UserItem>, private val onClick: (U
             binding.userName.text = user.login
             Glide.with(binding.root)
                 .load(user.avatarUrl)
+                .placeholder(R.drawable.account_circle)
                 .into(binding.userImage)
         }
     }

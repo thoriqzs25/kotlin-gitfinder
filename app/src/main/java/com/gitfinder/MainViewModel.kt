@@ -20,10 +20,12 @@ class MainViewModel: ViewModel() {
     val errorMsg: LiveData<Event<String>> = _errorMsg
 
     companion object {
-        private const val TAG = "mainviewmodel"
+        private const val TAG = "mainviewmodelthoriq"
     }
 
      fun searchUsers(q: String) {
+         Log.d(TAG, "searchUsers: ${users.value == null}")
+
         _isLoading.value = true
         val client = ApiConfig.getApiService().searchUser(q)
         client.enqueue(object : Callback<SearchResponse> {

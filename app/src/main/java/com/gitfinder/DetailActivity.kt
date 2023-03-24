@@ -1,6 +1,7 @@
 package com.gitfinder
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +9,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.core.view.marginTop
+import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -47,8 +50,9 @@ class DetailActivity : AppCompatActivity() {
         detailViewModel.userDetail.observe(this) {
             setUserDetail(it)
             binding.tvErrorDisplay.visibility = View.GONE
-            if (username != it.login) {
-                detailViewModel.getFollow("followers", it.login!!)
+
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                binding.profileCard.updatePadding(top = 0, bottom = 4)
             }
 
             val sectionPagerAdapter = SectionPagerAdapter(this, it.login!!)
@@ -65,8 +69,6 @@ class DetailActivity : AppCompatActivity() {
                 tab.text = "$count $currTab"
             }.attach()
             supportActionBar?.elevation = 0f
-
-
         }
 
         detailViewModel.isLoading.observe(this) { loading ->
@@ -92,7 +94,6 @@ class DetailActivity : AppCompatActivity() {
         }
 
         binding.backTab.setOnClickListener {
-            Log.d(TAG, "onCreate: test")
             finish()
         }
     }

@@ -28,6 +28,9 @@ class DetailViewModel : ViewModel() {
     }
 
     fun getDetail(q: String) {
+        //To prevent re-render on change screen orientation
+        if (userDetail.value?.login != null) return
+
         _isLoading.value = true
         val client = ApiConfig.getApiService().getUserDetail(q)
         client.enqueue(object : Callback<UserDetailResponse> {
@@ -57,11 +60,9 @@ class DetailViewModel : ViewModel() {
     }
 
     fun getFollow(type: String, username: String) {
-        if (followList != null) {
-            Log.d(TAG, "getFollow: not null")
-        } else {
-            Log.d(TAG, "getFollow: null!")
-        }
+        //To prevent re-render on change screen orientation
+        if(followList.value != null) return
+
         _isLoading.value = true
         val client = if (type == "followers") {
             ApiConfig.getApiService().getFollowers(username)

@@ -48,7 +48,7 @@
         android:fontFamily="@font/rounded_medium"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Find someone on GitHub!"
+        android:text="@string/search_me_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_card"
         android:layout_marginTop="12dp"

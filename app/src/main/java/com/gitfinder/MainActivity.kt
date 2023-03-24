@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
             searchView.clearFocus()
             imm.hideSoftInputFromWindow(searchView.windowToken, 0)
         }
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(q: String?): Boolean {
                 searchView.clearFocus()
@@ -68,7 +69,11 @@ class MainActivity : AppCompatActivity() {
 
             override fun onQueryTextChange(q: String?): Boolean {
                 if (q?.length!! >= 3) {
+                    binding.rvUserList.visibility = RecyclerView.VISIBLE
                     mainViewModel.searchUsers(q.toString())
+                } else {
+                    binding.rvUserList.visibility = RecyclerView.GONE
+                    binding.tvTotalres.text = resources.getString(R.string.search_me_text)
                 }
                 return false
             }

@@ -1,5 +1,7 @@
 package com.gitfinder
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -50,7 +52,7 @@ class DetailActivity : AppCompatActivity() {
             val sectionPagerAdapter = SectionPagerAdapter(this, it.login!!)
             binding.viewPager.adapter = sectionPagerAdapter
 
-            TabLayoutMediator(binding.tabs, binding.viewPager) {tab, position ->
+            TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
                 val currTab = resources.getString(TAB_TITLES[position])
                 val count = if (currTab == "followers") {
                     detailViewModel.userDetail.value?.followers
@@ -61,6 +63,8 @@ class DetailActivity : AppCompatActivity() {
                 tab.text = "$count $currTab"
             }.attach()
             supportActionBar?.elevation = 0f
+
+
         }
 
         detailViewModel.isLoading.observe(this) { loading ->
@@ -70,13 +74,29 @@ class DetailActivity : AppCompatActivity() {
         if (username != null) {
             detailViewModel.getDetail(username)
         }
+
+        binding.backTab.setOnClickListener {
+            Log.d(TAG, "onCreate: test")
+            finish()
+        }
     }
 
     private fun setUserDetail(detail: UserDetailResponse) {
-        binding.centertext.text = detail.login.toString()
+        val dateStr = detail.createdAt
+        val convertedDate = DateConverter().formatDate(dateStr!!)
+
+        binding.tvUsername.text = detail.login
+        binding.tvUsersince.text = "Member since $convertedDate"
+        binding.ivUserimage.borderColor = resources.getColor(R.color.white)
+        binding.ivUserimage.borderWidth = 2
         Glide.with(this)
             .load(detail.avatarUrl)
-            .into(binding.centerimage)
+            .into(binding.ivUserimage)
+
+        binding.icGithub.setOnClickListener {
+            val webIntent: Intent = Intent(Intent.ACTION_VIEW, Uri.parse(detail.htmlUrl))
+            startActivity(webIntent)
+        }
     }
 
     private fun showLoading(isLoading: Boolean) {

@@ -10,18 +10,14 @@ import retrofit2.Response
 
 class MainViewModel: ViewModel() {
 
-    private val _users = MutableLiveData<List<UserItem?>>()
-    val users :LiveData<List<UserItem?>> = _users
+    private val _users = MutableLiveData<SearchResponse>()
+    val users :LiveData<SearchResponse> = _users
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
     companion object {
         private const val TAG = "mainviewmodel"
-    }
-
-    init {
-        searchUsers("thoriqzs25")
     }
 
      fun searchUsers(q: String) {
@@ -36,7 +32,7 @@ class MainViewModel: ViewModel() {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
-                        _users.value = responseBody.items
+                        _users.value = responseBody
                     }
                 }
                 else {

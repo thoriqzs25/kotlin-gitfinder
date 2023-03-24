@@ -49,7 +49,12 @@ class FollowFragment : Fragment() {
         )[DetailViewModel::class.java]
 
         detailViewModel.followList.observe(viewLifecycleOwner) { list ->
+            Log.d(TAG, "onCreate: $list")
             setFollowListData(list as List<FollowResponseItem>)
+        }
+
+        detailViewModel.isLoading.observe(viewLifecycleOwner) { loading ->
+            showLoading(loading)
         }
 
         val layoutManager = LinearLayoutManager(this.context)
@@ -66,12 +71,25 @@ class FollowFragment : Fragment() {
     }
 
     private fun setFollowListData(list: List<FollowResponseItem>) {
-        val adapter = FollowAdapter(list, onClick = {
-            val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra("q", it.login)
-            startActivity(intent)
-        })
-        binding.rvFollow.adapter = adapter
+        binding.tvTotalFollow.text = "Showing ${list.size} results"
+        if (list.isNotEmpty()) {
+            val adapter = FollowAdapter(list, onClick = {
+                val intent = Intent(context, DetailActivity::class.java)
+                intent.putExtra("q", it.login)
+                startActivity(intent)
+            })
+            binding.rvFollow.adapter = adapter
+        } else {
+            binding.emptyList.text = "List kosong"
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
+        }
     }
 
     companion object {

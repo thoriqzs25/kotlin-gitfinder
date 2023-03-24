@@ -66,9 +66,9 @@ class DetailViewModel : ViewModel() {
             ) {
                 _isLoading.value = false
                 if (response.isSuccessful) {
+//                    Log.d(TAG, "onResponse: ")
                     val responseBody = response.body()
                     if (responseBody != null) {
-                        Log.d(TAG, "onResponse: ${responseBody}")
                         _followList.value = responseBody
                     }
                 } else {

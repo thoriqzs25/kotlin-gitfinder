@@ -6,6 +6,106 @@
     android:layout_height="match_parent"
     tools:context=".DetailActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/detail_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/green"
+        android:elevation="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/back_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:contentPadding="4dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/green">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_arrow_back" />
+
+            <TextView
+                android:id="@+id/tv_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:fontFamily="@font/rounded_medium"
+                android:text="@string/back"
+                android:textColor="@color/white"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profile_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/green"
+        android:elevation="10dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp"
+        app:flow_horizontalAlign="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/detail_toolbar">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_userimage"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/account_circle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/rounded_bold"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textFontWeight="700"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_userimage" />
+
+        <TextView
+            android:id="@+id/tv_usersince"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/rounded_medium"
+            android:text="@string/app_name"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_username" />
+
+
+        <ImageView
+            android:id="@+id/ic_github"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="28dp"
+            android:layout_marginBottom="28dp"
+            android:src="@drawable/ic_github_black_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <com.google.android.material.tabs.TabLayout
@@ -13,38 +113,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        app:tabTextColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/centerimage"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/dummy_image"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
-
-        <TextView
-            android:id="@+id/centertext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/centerimage"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="@string/app_name"/>
+        app:layout_constraintTop_toBottomOf="@id/profile_card"
+        app:tabGravity="fill"
+        app:tabIndicatorAnimationMode="elastic"
+        app:tabIndicatorColor="@color/white"
+        app:tabIndicatorFullWidth="false"
+        app:tabMode="fixed"
+        app:tabTextColor="@android:color/white" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/centertext" />
-
+        app:layout_constraintTop_toBottomOf="@+id/tabs" />
 
     <ProgressBar
         android:id="@+id/progress_bar"

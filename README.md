@@ -1,5 +1,5 @@
 # kotlin-gitfinder <img src="https://user-images.githubusercontent.com/71017985/227478557-955811e0-7634-4c25-b32d-99ddd6478243.svg" width="42" height="42">
-
+<p>It's a simple app that uses github API to fetch users. I focused my learning on using recyclerview, viewmodel, as well as viewpager2.</p>
 
 ## Light Mode
 <div>

@@ -3,13 +3,10 @@ package com.gitfinder
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -20,16 +17,11 @@ import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        private val TAG = "mainactivitythoriq"
-    }
-
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
         supportActionBar?.hide()
+        binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 
@@ -101,14 +93,18 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         })
         binding.rvUserList.adapter = adapter
-        binding.tvTotalres.text = "${users.totalCount} Results, showing ${users.items.size} results"
-
+        binding.tvTotalres.text = resources.getString(R.string.resultText, users.totalCount, users.items.size)
     }
+
     private fun showLoading(isLoading: Boolean) {
         if (isLoading) {
             binding.progressBar.visibility = View.VISIBLE
         } else {
             binding.progressBar.visibility = View.GONE
         }
+    }
+
+    companion object {
+        private val TAG = "mainactivitythoriq"
     }
 }

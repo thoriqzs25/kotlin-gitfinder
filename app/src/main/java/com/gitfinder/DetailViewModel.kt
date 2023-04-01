@@ -1,7 +1,6 @@
 package com.gitfinder
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,10 +21,6 @@ class DetailViewModel : ViewModel() {
 
     private val _errorMsg = MutableLiveData<Event<String>>()
     val errorMsg: LiveData<Event<String>> = _errorMsg
-
-    companion object {
-        private const val TAG = "detailviewmodelthoriq"
-    }
 
     fun getDetail(q: String) {
         //To prevent re-render on change screen orientation
@@ -94,5 +89,9 @@ class DetailViewModel : ViewModel() {
             }
 
         })
+    }
+
+    companion object {
+        private const val TAG = "detailviewmodelthoriq"
     }
 }

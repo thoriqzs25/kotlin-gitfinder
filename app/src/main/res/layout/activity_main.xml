@@ -64,9 +64,9 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_totalres" />
+        app:layout_constraintTop_toBottomOf="@id/tv_totalres"
+        tools:listitem="@layout/user_card"/>
 
     <ProgressBar
         android:id="@+id/progress_bar"

@@ -7,4 +7,8 @@
     <string name="app_title">Geprek GitHub Profile Finder</string>
     <string name="back">Back</string>
     <string name="search_me_text">Search me! @thoriqzs25</string>
+    <string name="followersTab">followers</string>
+    <string name="followingTab">following</string>
+    <string name="stringExtra">q</string>
+    <string name="resultText">%d  Results, showing %d result</string>
 </resources>

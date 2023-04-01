@@ -3,44 +3,30 @@ package com.gitfinder
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.annotation.StringRes
-import androidx.core.view.marginTop
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.gitfinder.databinding.ActivityDetailBinding
-import com.gitfinder.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class DetailActivity : AppCompatActivity() {
-    companion object {
-        private val TAG = "detailactivitythoriq"
-
-        @StringRes
-        private val TAB_TITLES = intArrayOf(
-            R.string.tab_text_1,
-            R.string.tab_text_2
-        )
-    }
 
     private lateinit var binding: ActivityDetailBinding
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDetailBinding.inflate(layoutInflater)
         supportActionBar?.hide()
+        binding = ActivityDetailBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 
-        val username = intent.getStringExtra("q")
+        val username = intent.getStringExtra(resources.getString(R.string.stringExtra))
 
         val detailViewModel = ViewModelProvider(
             this,
@@ -60,7 +46,7 @@ class DetailActivity : AppCompatActivity() {
 
             TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
                 val currTab = resources.getString(TAB_TITLES[position])
-                val count = if (currTab == "followers") {
+                val count = if (currTab == resources.getString(R.string.followersTab)) {
                     detailViewModel.userDetail.value?.followers
                 } else {
                     detailViewModel.userDetail.value?.following
@@ -117,11 +103,15 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun showLoading(isLoading: Boolean) {
-        if (isLoading) {
-            binding.progressBar.visibility = View.VISIBLE
-        } else {
-            binding.progressBar.visibility = View.GONE
-        }
+    private fun showLoading(state: Boolean) { binding.progressBar.visibility = if (state) View.VISIBLE else View.GONE }
+
+    companion object {
+        private val TAG = "detailactivitythoriq"
+
+        @StringRes
+        private val TAB_TITLES = intArrayOf(
+            R.string.tab_text_1,
+            R.string.tab_text_2
+        )
     }
 }

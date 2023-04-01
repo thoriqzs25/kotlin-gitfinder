@@ -19,10 +19,6 @@ class MainViewModel: ViewModel() {
     private val _errorMsg = MutableLiveData<Event<String>>()
     val errorMsg: LiveData<Event<String>> = _errorMsg
 
-    companion object {
-        private const val TAG = "mainviewmodelthoriq"
-    }
-
      fun searchUsers(q: String) {
          Log.d(TAG, "searchUsers: ${users.value == null}")
 
@@ -51,5 +47,9 @@ class MainViewModel: ViewModel() {
                 Log.d(TAG, "onFailure: ${t.message}")
             }
         })
+    }
+
+    companion object {
+        private const val TAG = "mainviewmodelthoriq"
     }
 }

@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gitfinder.databinding.FragmentFollowBinding
+import com.gitfinder.ui.DetailActivity
 
 private const val ARG_POSITION = "param1"
 private const val ARG_USERNAME = "param2"

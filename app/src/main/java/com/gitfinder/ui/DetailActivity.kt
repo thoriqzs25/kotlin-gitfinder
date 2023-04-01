@@ -1,4 +1,4 @@
-package com.gitfinder
+package com.gitfinder.ui
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.gitfinder.*
 import com.gitfinder.databinding.ActivityDetailBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator

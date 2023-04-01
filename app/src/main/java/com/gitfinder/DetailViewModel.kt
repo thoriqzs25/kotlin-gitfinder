@@ -37,7 +37,7 @@ class DetailViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
-                        _userDetail.value = responseBody
+                        _userDetail.value = responseBody!!
                     }
                 } else {
                     _errorMsg.value = Event("Server Error, ${response.message()}")
@@ -74,7 +74,7 @@ class DetailViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
-                        _followList.value = responseBody
+                        _followList.value = responseBody!!
                     }
                 } else {
                     _errorMsg.value = Event("Server Error, ${response.message()}")

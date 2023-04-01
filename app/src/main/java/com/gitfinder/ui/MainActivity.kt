@@ -1,4 +1,4 @@
-package com.gitfinder
+package com.gitfinder.ui
 
 import android.app.SearchManager
 import android.content.Context
@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gitfinder.*
 import com.gitfinder.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 

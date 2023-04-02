@@ -3,6 +3,7 @@ package com.gitfinder.ui.fragment
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gitfinder.adapter.viewmodel.DetailViewModel
 import com.gitfinder.adapter.rv.FollowAdapter
 import com.gitfinder.FollowResponseItem
+import com.gitfinder.database.FavoriteUser
 import com.gitfinder.databinding.FragmentFollowBinding
 import com.gitfinder.helper.ViewModelFactory
 import com.gitfinder.ui.DetailActivity
@@ -74,12 +76,29 @@ class FollowFragment : Fragment() {
     private fun setFollowListData(list: List<FollowResponseItem>) {
         binding.tvTotalFollow.text = "Showing ${list.size} results"
         if (list.isNotEmpty()) {
-            val adapter = FollowAdapter(list, onClick = {
+            val adapter = FollowAdapter(list, onClickCard = {
                 val intent = Intent(context, DetailActivity::class.java)
                 intent.putExtra("q", it.login)
                 startActivity(intent)
-            })
+            },
+                onClickFav = {
+                    var favoriteUser = FavoriteUser()
+                    favoriteUser.username = it.login!!
+                    favoriteUser.avatarUrl = it.avatarUrl
+                    favoriteUser.htmlUtl = it.htmlUrl!!
+                    Log.d(TAG, "setFollowListData: ${favoriteUser.username}")
+
+                    if (detailViewModel.isFavorite(favoriteUser)) {
+                        detailViewModel.removeFavorite(favoriteUser)
+                    } else {
+                        detailViewModel.addFavorite(favoriteUser)
+                    }
+                })
             binding.rvFollow.adapter = adapter
+
+            detailViewModel.getFavoriteList().observe(viewLifecycleOwner) { favoriteUsers ->
+                adapter.updateFavoriteUsers(favoriteUsers)
+            }
         } else {
             binding.emptyList.text = "List kosong"
         }

@@ -13,9 +13,10 @@ import com.gitfinder.databinding.UserCardBinding
 
 class UsersAdapter(
     private val listUser: List<UserItem>,
-    private val onClickCard: (UserItem) -> Unit, private val onClickFav: (UserItem) -> Unit
-) :
-    RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
+    private val onClickCard: (UserItem) -> Unit,
+    private val onClickFav: (UserItem) -> Unit
+) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
+
     private val TAG: String? = "usersadapterthoriq"
     private var favUsers: List<FavoriteUser> = emptyList()
 

@@ -1,5 +1,6 @@
 package com.gitfinder.adapter.viewmodel
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,11 +9,14 @@ import com.gitfinder.api.ApiConfig
 import com.gitfinder.helper.Event
 import com.gitfinder.FollowResponseItem
 import com.gitfinder.UserDetailResponse
+import com.gitfinder.database.FavoriteUser
+import com.gitfinder.repository.FavoriteRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DetailViewModel : ViewModel() {
+class DetailViewModel(application: Application) : ViewModel() {
+    private val mFavoriteRepository: FavoriteRepository = FavoriteRepository(application)
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -25,6 +29,15 @@ class DetailViewModel : ViewModel() {
 
     private val _errorMsg = MutableLiveData<Event<String>>()
     val errorMsg: LiveData<Event<String>> = _errorMsg
+
+    private val _favoriteUsers = MutableLiveData<List<FavoriteUser>>()
+    val favoriteUsers :LiveData<List<FavoriteUser>> = _favoriteUsers
+
+    init {
+        mFavoriteRepository.getFavoriteList().observeForever { favoriteList ->
+            _favoriteUsers.value = favoriteList
+        }
+    }
 
     fun getDetail(q: String) {
         //To prevent re-render on change screen orientation
@@ -93,6 +106,20 @@ class DetailViewModel : ViewModel() {
             }
 
         })
+    }
+
+    fun isFavorite(favoriteUser: FavoriteUser): Boolean {
+        return favoriteUsers.value?.any { it.username == favoriteUser.username } ?: false
+    }
+
+    fun getFavoriteList(): LiveData<List<FavoriteUser>> = mFavoriteRepository.getFavoriteList()
+
+    fun addFavorite(favoriteUser: FavoriteUser) {
+        mFavoriteRepository.addFavorite(favoriteUser)
+    }
+
+    fun removeFavorite(favoriteUser: FavoriteUser) {
+        mFavoriteRepository.removeFavorite(favoriteUser)
     }
 
     companion object {

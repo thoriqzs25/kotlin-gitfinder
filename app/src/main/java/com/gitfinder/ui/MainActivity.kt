@@ -112,7 +112,6 @@ class MainActivity : AppCompatActivity() {
                 favoriteUser.avatarUrl = it.avatarUrl
                 favoriteUser.htmlUtl = it.htmlUrl!!
 
-                    Log.d(TAG, "setUsersListData: ${mainViewModel.isFavorite(favoriteUser)} ${favoriteUser.username}")
                 if (mainViewModel.isFavorite(favoriteUser)) {
                     mainViewModel.removeFavorite(favoriteUser)
                 } else {

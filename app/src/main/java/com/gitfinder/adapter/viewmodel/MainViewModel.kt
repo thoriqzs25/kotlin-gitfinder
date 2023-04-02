@@ -30,10 +30,8 @@ class MainViewModel(application: Application): ViewModel() {
     val favoriteUsers :LiveData<List<FavoriteUser>> = _favoriteUsers
 
     init {
-
         mFavoriteRepository.getFavoriteList().observeForever { favoriteList ->
             _favoriteUsers.value = favoriteList
-            Log.d(TAG, "line 33: $favoriteList")
         }
     }
 

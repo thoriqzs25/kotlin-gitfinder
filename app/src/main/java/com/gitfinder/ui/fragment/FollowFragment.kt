@@ -86,7 +86,6 @@ class FollowFragment : Fragment() {
                     favoriteUser.username = it.login!!
                     favoriteUser.avatarUrl = it.avatarUrl
                     favoriteUser.htmlUtl = it.htmlUrl!!
-                    Log.d(TAG, "setFollowListData: ${favoriteUser.username}")
 
                     if (detailViewModel.isFavorite(favoriteUser)) {
                         detailViewModel.removeFavorite(favoriteUser)
@@ -115,9 +114,5 @@ class FollowFragment : Fragment() {
     private fun obtainViewModel(fragment: Fragment): DetailViewModel {
         val factory = ViewModelFactory.getInstance(fragment.requireActivity().application)
         return ViewModelProvider(fragment, factory)[DetailViewModel::class.java]
-    }
-
-    companion object {
-        private val TAG = "followfragmentthoriq"
     }
 }

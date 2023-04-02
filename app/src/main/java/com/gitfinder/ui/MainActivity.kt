@@ -144,8 +144,4 @@ class MainActivity : AppCompatActivity() {
         val factory = ViewModelFactory.getInstance(activity.application)
         return ViewModelProvider(activity, factory)[MainViewModel::class.java]
     }
-
-    companion object {
-        private val TAG = "mainactivitythoriq"
-    }
 }

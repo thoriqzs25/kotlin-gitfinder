@@ -64,7 +64,6 @@ class MainViewModel(application: Application): ViewModel() {
     }
 
     fun isFavorite(favoriteUser: FavoriteUser): Boolean {
-        Log.d(TAG, "isFavorite: ${favoriteUsers.value}")
         return favoriteUsers.value?.any { it.username == favoriteUser.username } ?: false
     }
 

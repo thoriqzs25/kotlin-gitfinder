@@ -1,10 +1,12 @@
 package com.gitfinder.ui
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.gitfinder.adapter.viewmodel.DetailViewModel
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.gitfinder.R
+import com.gitfinder.adapter.rv.UsersAdapter
 import com.gitfinder.adapter.viewmodel.FavoriteViewModel
 import com.gitfinder.database.FavoriteUser
 import com.gitfinder.databinding.ActivityFavoriteBinding
@@ -14,12 +16,8 @@ class FavoriteActivity : AppCompatActivity() {
 
     private lateinit var favoriteViewModel: FavoriteViewModel
 
-    private val TAG = "favoriteactivitythoriq"
-
     private var _binding: ActivityFavoriteBinding? = null
     private val binding get() = _binding!!
-
-    private var favUsers: List<FavoriteUser>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +29,14 @@ class FavoriteActivity : AppCompatActivity() {
         favoriteViewModel = obtainViewModel(this@FavoriteActivity)
 
         favoriteViewModel.favoriteUsers.observe(this) {
-            Log.d(TAG, "onCreate: line 34, ${it.size}")
-            favUsers = it
+            setFavUserList(it)
+        }
+
+        val layoutManager = LinearLayoutManager(this)
+        binding.rvFavorite.layoutManager = layoutManager
+
+        binding.backTab.setOnClickListener {
+            finish()
         }
     }
 
@@ -46,7 +50,31 @@ class FavoriteActivity : AppCompatActivity() {
         return ViewModelProvider(activity, factory)[FavoriteViewModel::class.java]
     }
 
-//    private fun setFavUserList(users: List<User>) {
-//        if (users.isNotEmpty())
-//    }
+    private fun setFavUserList(users: List<FavoriteUser>) {
+        if (users.isNotEmpty()) {
+            val adapter = UsersAdapter(users,
+                onClickCard = {
+                    val intent = Intent(this, DetailActivity::class.java)
+                    intent.putExtra(resources.getString(R.string.stringExtra), it.username)
+                    startActivity(intent)
+                },
+                onClickFav = {
+                    var favoriteUser = FavoriteUser()
+                    favoriteUser.username = it.username!!
+                    favoriteUser.avatarUrl = it.avatarUrl
+                    favoriteUser.htmlUtl = it.htmlUtl!!
+
+                    if (favoriteViewModel.isFavorite(favoriteUser)) {
+                        favoriteViewModel.removeFavorite(favoriteUser)
+                    } else {
+                        favoriteViewModel.addFavorite(favoriteUser)
+                    }
+                })
+            binding.rvFavorite.adapter = adapter
+
+            favoriteViewModel.getFavoriteList().observe(this) { favoriteUsers ->
+                adapter.updateFavoriteUsers(favoriteUsers)
+            }
+        }
+    }
 }

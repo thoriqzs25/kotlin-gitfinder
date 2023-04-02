@@ -18,6 +18,10 @@ class FavoriteViewModel(application: Application) : ViewModel() {
             _favoriteUsers.value = favoriteList
         }
     }
+
+    fun isFavorite(favoriteUser: FavoriteUser): Boolean {
+        return favoriteUsers.value?.any { it.username == favoriteUser.username } ?: false
+    }
     fun getFavoriteList(): LiveData<List<FavoriteUser>> = mFavoriteRepository.getFavoriteList()
 
     fun addFavorite(favoriteUser: FavoriteUser) {

@@ -120,8 +120,6 @@ class DetailActivity : AppCompatActivity() {
     }
 
     companion object {
-        private val TAG = "detailactivitythoriq"
-
         @StringRes
         private val TAB_TITLES = intArrayOf(
             R.string.tab_text_1,

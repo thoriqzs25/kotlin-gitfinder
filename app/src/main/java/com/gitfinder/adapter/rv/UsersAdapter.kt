@@ -13,7 +13,7 @@ import com.gitfinder.databinding.UserCardBinding
 
 
 class UsersAdapter<T>(
-    private val listUser: List<T>,
+    private val listUser: List<T>?,
     private val onClickCard: (T) -> Unit,
     private val onClickFav: (T) -> Unit
 ) : RecyclerView.Adapter<UsersAdapter<T>.ViewHolder>() {
@@ -79,10 +79,10 @@ class UsersAdapter<T>(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(listUser[position])
+        holder.bind(listUser!![position])
     }
 
-    override fun getItemCount() = listUser.size
+    override fun getItemCount() = listUser!!.size
 
     fun updateFavoriteUsers(users: List<FavoriteUser>) {
         favUsers = users

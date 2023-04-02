@@ -30,6 +30,7 @@ class FavoriteActivity : AppCompatActivity() {
 
         favoriteViewModel.favoriteUsers.observe(this) {
             setFavUserList(it)
+            favoriteViewModel.favoriteUsers.removeObservers(this)
         }
 
         val layoutManager = LinearLayoutManager(this)

@@ -14,6 +14,7 @@ import com.gitfinder.R
 import com.gitfinder.UserDetailResponse
 import com.gitfinder.adapter.SectionPagerAdapter
 import com.gitfinder.adapter.viewmodel.DetailViewModel
+import com.gitfinder.database.FavoriteUser
 import com.gitfinder.databinding.ActivityDetailBinding
 import com.gitfinder.helper.DateConverter
 import com.gitfinder.helper.Event
@@ -41,6 +42,7 @@ class DetailActivity : AppCompatActivity() {
 
         detailViewModel.userDetail.observe(this) {
             setUserDetail(it)
+            setOnClickFab(it)
             binding.tvErrorDisplay.visibility = View.GONE
 
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -61,22 +63,37 @@ class DetailActivity : AppCompatActivity() {
                 tab.text = "$count $currTab"
             }.attach()
             supportActionBar?.elevation = 0f
+
+            if (detailViewModel.isFavorite(it.login)) {
+                binding.fabFav?.setImageResource(R.drawable.ic_favorite_fill)
+            } else {
+                binding.fabFav?.setImageResource(R.drawable.ic_favorite_outline)
+            }
         }
 
         detailViewModel.isLoading.observe(this) { loading ->
             showLoading(loading)
         }
 
-        detailViewModel.errorMsg.observe(this) {msg ->
+        detailViewModel.errorMsg.observe(this) { msg ->
             setErrorMessage(msg)
         }
 
-        if (username != null) {
-            detailViewModel.getDetail(username)
-        }
+        detailViewModel.getDetail(username!!)
 
         binding.backTab.setOnClickListener {
             finish()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        detailViewModel.userDetail.observe(this) {
+            if (detailViewModel.isFavorite(it.login!!)) {
+                binding.fabFav?.setImageResource(R.drawable.ic_favorite_fill)
+            } else {
+                binding.fabFav?.setImageResource(R.drawable.ic_favorite_outline)
+            }
         }
     }
 
@@ -90,6 +107,7 @@ class DetailActivity : AppCompatActivity() {
         val convertedDate = DateConverter().formatDate(dateStr!!)
 
         binding.tvUsername.text = detail.login
+        binding.tvName!!.text = if (detail.name.isNullOrEmpty()) "Undefined No Name" else detail.name
         binding.tvUsersince.text = "Member since $convertedDate"
         binding.ivUserimage.borderColor = resources.getColor(R.color.white)
         binding.ivUserimage.borderWidth = 2
@@ -104,7 +122,9 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun showLoading(state: Boolean) { binding.progressBar.visibility = if (state) View.VISIBLE else View.GONE }
+    private fun showLoading(state: Boolean) {
+        binding.progressBar.visibility = if (state) View.VISIBLE else View.GONE
+    }
 
     private fun obtainViewModel(activity: DetailActivity): DetailViewModel {
         val factory = ViewModelFactory.getInstance(activity.application)
@@ -122,6 +142,24 @@ class DetailActivity : AppCompatActivity() {
             )
             snackbar.anchorView = binding.botView
             snackbar.show()
+        }
+    }
+
+    private fun setOnClickFab(user: UserDetailResponse) {
+        binding.fabFav?.setOnClickListener {
+            var favoriteUser = FavoriteUser()
+            favoriteUser.username = user.login!!
+            favoriteUser.avatarUrl = user.avatarUrl
+            favoriteUser.htmlUtl = user.htmlUrl!!
+
+            if (detailViewModel.isFavorite(favoriteUser.username)) {
+                detailViewModel.removeFavorite(favoriteUser)
+                binding.fabFav?.setImageResource(R.drawable.ic_favorite_outline)
+
+            } else {
+                detailViewModel.addFavorite(favoriteUser)
+                binding.fabFav?.setImageResource(R.drawable.ic_favorite_fill)
+            }
         }
     }
 

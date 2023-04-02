@@ -2,6 +2,8 @@ package com.gitfinder.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,6 +43,13 @@ class FavoriteActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        favoriteViewModel.favoriteUsers.observe(this) {
+            setFavUserList(it)
+            favoriteViewModel.favoriteUsers.removeObservers(this)
+        }
+    }
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
@@ -65,17 +74,25 @@ class FavoriteActivity : AppCompatActivity() {
                     favoriteUser.avatarUrl = it.avatarUrl
                     favoriteUser.htmlUtl = it.htmlUtl!!
 
-                    if (favoriteViewModel.isFavorite(favoriteUser)) {
+                    val isAlreadyFav = favoriteViewModel.isFavorite(favoriteUser)
+                    Log.d("favoriteactivitythoriq", "setFavUserList: $isAlreadyFav")
+
+                    if (isAlreadyFav) {
                         favoriteViewModel.removeFavorite(favoriteUser)
                     } else {
                         favoriteViewModel.addFavorite(favoriteUser)
                     }
                 })
             binding.rvFavorite.adapter = adapter
+            binding.rvFavorite.visibility = View.VISIBLE
 
             favoriteViewModel.getFavoriteList().observe(this) { favoriteUsers ->
                 adapter.updateFavoriteUsers(favoriteUsers)
             }
+
+
+        } else {
+            binding.rvFavorite.visibility = View.GONE
         }
     }
 }

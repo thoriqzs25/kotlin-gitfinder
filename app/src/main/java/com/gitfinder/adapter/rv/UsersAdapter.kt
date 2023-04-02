@@ -55,6 +55,8 @@ class UsersAdapter<T>(
                 } else {
                     binding.ivFavorite.setImageResource(R.drawable.ic_favorite_outline)
                 }
+            } else {
+                binding.ivFavorite.setImageResource(R.drawable.ic_favorite_outline)
             }
 
 

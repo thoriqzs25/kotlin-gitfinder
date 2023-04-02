@@ -86,7 +86,7 @@ class FollowFragment : Fragment() {
                     favoriteUser.avatarUrl = it.avatarUrl
                     favoriteUser.htmlUtl = it.htmlUrl!!
 
-                    if (detailViewModel.isFavorite(favoriteUser)) {
+                    if (detailViewModel.isFavorite(favoriteUser.username)) {
                         detailViewModel.removeFavorite(favoriteUser)
                     } else {
                         detailViewModel.addFavorite(favoriteUser)

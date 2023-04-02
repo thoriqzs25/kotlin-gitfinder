@@ -108,8 +108,8 @@ class DetailViewModel(application: Application) : ViewModel() {
         })
     }
 
-    fun isFavorite(favoriteUser: FavoriteUser): Boolean {
-        return favoriteUsers.value?.any { it.username == favoriteUser.username } ?: false
+    fun isFavorite(username: String): Boolean {
+        return favoriteUsers.value?.any { it.username == username } ?: false
     }
 
     fun getFavoriteList(): LiveData<List<FavoriteUser>> = mFavoriteRepository.getFavoriteList()

@@ -17,6 +17,9 @@
             android:name=".ui.DetailActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.FavoriteActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true">

@@ -59,6 +59,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        binding.ivFavList.setOnClickListener {
+            val intent = Intent(this@MainActivity, FavoriteActivity::class.java)
+            startActivity(intent)
+        }
+
         val layoutManager = LinearLayoutManager(this)
         binding.rvUserList.layoutManager = layoutManager
         val itemDecoration = DividerItemDecoration(this, layoutManager.orientation)

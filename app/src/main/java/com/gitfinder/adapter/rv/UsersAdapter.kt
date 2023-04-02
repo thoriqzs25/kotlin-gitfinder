@@ -5,23 +5,24 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.gitfinder.FollowResponseItem
 import com.gitfinder.R
 import com.gitfinder.UserItem
 import com.gitfinder.database.FavoriteUser
 import com.gitfinder.databinding.UserCardBinding
 
 
-class UsersAdapter(
-    private val listUser: List<UserItem>,
-    private val onClickCard: (UserItem) -> Unit,
-    private val onClickFav: (UserItem) -> Unit
-) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
+class UsersAdapter<T>(
+    private val listUser: List<T>,
+    private val onClickCard: (T) -> Unit,
+    private val onClickFav: (T) -> Unit
+) : RecyclerView.Adapter<UsersAdapter<T>.ViewHolder>() {
 
     private val TAG: String? = "usersadapterthoriq"
     private var favUsers: List<FavoriteUser> = emptyList()
 
     inner class ViewHolder(var binding: UserCardBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(user: UserItem) {
+        fun bind(user: T) {
             itemView.setOnClickListener {
                 onClickCard(user)
             }
@@ -30,10 +31,27 @@ class UsersAdapter(
                 onClickFav(user)
             }
 
-            binding.userName.text = user.login
+            when (user) {
+                is UserItem-> {
+                    binding.userName.text = user.login
+                }
+                is FollowResponseItem -> {
+                    binding.userName.text = user.login
+                }
+                is FavoriteUser -> {
+                    binding.userName.text = user.username
+                }
+            }
 
             if (favUsers.isNotEmpty()) {
-                val isFavoriteUser = favUsers.any { it.username == user.login }
+                val isFavoriteUser = favUsers.any {
+                    when (user) {
+                        is UserItem -> it.username == user.login
+                        is FollowResponseItem -> it.username == user.login
+                        is FavoriteUser -> it.username == user.username
+                        else -> false
+                    }
+                }
                 if (isFavoriteUser) {
                     binding.ivFavorite.setImageResource(R.drawable.ic_favorite_fill)
                 } else {
@@ -41,8 +59,14 @@ class UsersAdapter(
                 }
             }
 
+
             Glide.with(binding.root)
-                .load(user.avatarUrl)
+                .load(when (user) {
+                    is UserItem -> user.avatarUrl
+                    is FollowResponseItem -> user.avatarUrl
+                    is FavoriteUser -> user.avatarUrl
+                    else -> null
+                })
                 .placeholder(R.drawable.account_circle)
                 .into(binding.userImage)
         }

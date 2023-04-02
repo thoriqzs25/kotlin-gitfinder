@@ -13,8 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gitfinder.adapter.viewmodel.DetailViewModel
-import com.gitfinder.adapter.rv.FollowAdapter
 import com.gitfinder.FollowResponseItem
+import com.gitfinder.adapter.rv.UsersAdapter
 import com.gitfinder.database.FavoriteUser
 import com.gitfinder.databinding.FragmentFollowBinding
 import com.gitfinder.helper.ViewModelFactory
@@ -76,7 +76,7 @@ class FollowFragment : Fragment() {
     private fun setFollowListData(list: List<FollowResponseItem>) {
         binding.tvTotalFollow.text = "Showing ${list.size} results"
         if (list.isNotEmpty()) {
-            val adapter = FollowAdapter(list, onClickCard = {
+            val adapter = UsersAdapter(list, onClickCard = {
                 val intent = Intent(context, DetailActivity::class.java)
                 intent.putExtra("q", it.login)
                 startActivity(intent)

@@ -1,4 +1,4 @@
-package com.gitfinder
+package com.gitfinder.helper
 
 open class Event<out T>(private val content: T) {
 

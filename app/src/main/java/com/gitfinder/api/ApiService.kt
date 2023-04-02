@@ -1,5 +1,8 @@
-package com.gitfinder
+package com.gitfinder.api
 
+import com.gitfinder.FollowResponseItem
+import com.gitfinder.SearchResponse
+import com.gitfinder.UserDetailResponse
 import retrofit2.Call
 import retrofit2.http.*
 

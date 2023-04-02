@@ -21,6 +21,7 @@ abstract class MainDatabase : RoomDatabase() {
                         .build()
                 }
             }
+
             return INSTANCE as MainDatabase
         }
     }

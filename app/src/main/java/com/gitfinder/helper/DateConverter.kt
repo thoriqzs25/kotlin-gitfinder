@@ -1,4 +1,4 @@
-package com.gitfinder
+package com.gitfinder.helper
 import java.text.SimpleDateFormat
 import java.util.*
 

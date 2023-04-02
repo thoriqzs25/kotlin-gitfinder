@@ -4,6 +4,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -13,23 +14,30 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gitfinder.*
+import com.gitfinder.adapter.rv.UsersAdapter
+import com.gitfinder.adapter.viewmodel.DetailViewModel
+import com.gitfinder.adapter.viewmodel.FavoriteViewModel
+import com.gitfinder.adapter.viewmodel.MainViewModel
+import com.gitfinder.database.FavoriteUser
 import com.gitfinder.databinding.ActivityMainBinding
+import com.gitfinder.helper.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var mainViewModel: MainViewModel
+
+    private var _binding: ActivityMainBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 
-        val mainViewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.NewInstanceFactory()
-        )[MainViewModel::class.java]
+        mainViewModel = obtainViewModel(this@MainActivity)
 
         mainViewModel.users.observe(this) { users ->
             setUsersListData(users as SearchResponse)
@@ -86,15 +94,38 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun setUsersListData(users: SearchResponse) {
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 
-        val adapter = UsersAdapter(users.items as List<UserItem>, onClick = {
-            val intent = Intent(this@MainActivity, DetailActivity::class.java)
-            intent.putExtra("q", it.login)
-            startActivity(intent)
-        })
+    private fun setUsersListData(users: SearchResponse) {
+        val adapter = UsersAdapter(users.items as List<UserItem>,
+            onClickCard = {
+                val intent = Intent(this@MainActivity, DetailActivity::class.java)
+                intent.putExtra(resources.getString(R.string.stringExtra), it.login)
+                startActivity(intent)
+        },
+            onClickFav = {
+                var favoriteUser = FavoriteUser()
+                favoriteUser.username = it.login!!
+                favoriteUser.avatarUrl = it.avatarUrl
+                favoriteUser.htmlUtl = it.htmlUrl!!
+
+                    Log.d(TAG, "setUsersListData: ${mainViewModel.isFavorite(favoriteUser)} ${favoriteUser.username}")
+                if (mainViewModel.isFavorite(favoriteUser)) {
+                    mainViewModel.removeFavorite(favoriteUser)
+                } else {
+                    mainViewModel.addFavorite(favoriteUser)
+                }
+            }
+        )
         binding.rvUserList.adapter = adapter
         binding.tvTotalres.text = resources.getString(R.string.resultText, users.totalCount, users.items.size)
+
+        mainViewModel.getFavoriteList().observe(this) { favoriteUsers ->
+            adapter.updateFavoriteUsers(favoriteUsers)
+        }
     }
 
     private fun showLoading(isLoading: Boolean) {
@@ -103,6 +134,11 @@ class MainActivity : AppCompatActivity() {
         } else {
             binding.progressBar.visibility = View.GONE
         }
+    }
+
+    private fun obtainViewModel(activity: MainActivity): MainViewModel {
+        val factory = ViewModelFactory.getInstance(activity.application)
+        return ViewModelProvider(activity, factory)[MainViewModel::class.java]
     }
 
     companion object {

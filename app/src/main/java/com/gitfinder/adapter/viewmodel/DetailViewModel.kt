@@ -1,9 +1,13 @@
-package com.gitfinder
+package com.gitfinder.adapter.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.gitfinder.api.ApiConfig
+import com.gitfinder.helper.Event
+import com.gitfinder.FollowResponseItem
+import com.gitfinder.UserDetailResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

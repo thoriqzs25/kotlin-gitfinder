@@ -1,4 +1,4 @@
-package com.gitfinder
+package com.gitfinder.adapter.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.LiveData

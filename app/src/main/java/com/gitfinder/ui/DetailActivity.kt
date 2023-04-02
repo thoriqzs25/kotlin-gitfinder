@@ -11,28 +11,31 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.gitfinder.*
+import com.gitfinder.adapter.SectionPagerAdapter
+import com.gitfinder.adapter.viewmodel.DetailViewModel
 import com.gitfinder.databinding.ActivityDetailBinding
+import com.gitfinder.helper.DateConverter
+import com.gitfinder.helper.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 
 class DetailActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityDetailBinding
+    private lateinit var detailViewModel: DetailViewModel
 
+    private var _binding: ActivityDetailBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-        binding = ActivityDetailBinding.inflate(layoutInflater)
+        _binding = ActivityDetailBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 
         val username = intent.getStringExtra(resources.getString(R.string.stringExtra))
 
-        val detailViewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.NewInstanceFactory()
-        )[DetailViewModel::class.java]
+        detailViewModel = obtainViewModel(this@DetailActivity)
 
         detailViewModel.userDetail.observe(this) {
             setUserDetail(it)
@@ -85,6 +88,11 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
     private fun setUserDetail(detail: UserDetailResponse) {
         val dateStr = detail.createdAt
         val convertedDate = DateConverter().formatDate(dateStr!!)
@@ -105,6 +113,11 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun showLoading(state: Boolean) { binding.progressBar.visibility = if (state) View.VISIBLE else View.GONE }
+
+    private fun obtainViewModel(activity: DetailActivity): DetailViewModel {
+        val factory = ViewModelFactory.getInstance(activity.application)
+        return ViewModelProvider(activity, factory)[DetailViewModel::class.java]
+    }
 
     companion object {
         private val TAG = "detailactivitythoriq"

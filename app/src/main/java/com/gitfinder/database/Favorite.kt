@@ -10,5 +10,5 @@ data class FavoriteUser(
     @PrimaryKey(autoGenerate = false)
     var username: String = "",
     var avatarUrl: String? = null,
-    var httpUrl: String = "",
+    var htmlUtl: String = "",
 ) : Parcelable

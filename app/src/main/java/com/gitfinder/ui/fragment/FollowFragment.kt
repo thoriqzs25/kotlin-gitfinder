@@ -1,4 +1,4 @@
-package com.gitfinder
+package com.gitfinder.ui.fragment
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -11,13 +11,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.gitfinder.adapter.viewmodel.DetailViewModel
+import com.gitfinder.adapter.rv.FollowAdapter
+import com.gitfinder.FollowResponseItem
 import com.gitfinder.databinding.FragmentFollowBinding
+import com.gitfinder.helper.ViewModelFactory
 import com.gitfinder.ui.DetailActivity
 
-private const val ARG_POSITION = "param1"
-private const val ARG_USERNAME = "param2"
-
 class FollowFragment : Fragment() {
+    private lateinit var detailViewModel: DetailViewModel
+
     private var position: Int? = 0
     private var username: String? = null
 
@@ -31,14 +34,11 @@ class FollowFragment : Fragment() {
         _binding = FragmentFollowBinding.inflate(inflater, container, false)
 
         arguments?.let {
-            position = it.getInt(ARG_POSITION)
-            username = it.getString(ARG_USERNAME)
+            position = it.getInt("position")
+            username = it.getString("username")
         }
 
-        val detailViewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.NewInstanceFactory()
-        )[DetailViewModel::class.java]
+        detailViewModel = obtainViewModel(this)
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             binding.tvTotalFollow.visibility = View.GONE
@@ -66,6 +66,11 @@ class FollowFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
     private fun setFollowListData(list: List<FollowResponseItem>) {
         binding.tvTotalFollow.text = "Showing ${list.size} results"
         if (list.isNotEmpty()) {
@@ -88,15 +93,12 @@ class FollowFragment : Fragment() {
         }
     }
 
+    private fun obtainViewModel(fragment: Fragment): DetailViewModel {
+        val factory = ViewModelFactory.getInstance(fragment.requireActivity().application)
+        return ViewModelProvider(fragment, factory)[DetailViewModel::class.java]
+    }
+
     companion object {
-        @JvmStatic
         private val TAG = "followfragmentthoriq"
-        fun newInstance(param1: Int, param2: String) =
-            FollowFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_POSITION, param1)
-                    putString(ARG_USERNAME, param2)
-                }
-            }
     }
 }

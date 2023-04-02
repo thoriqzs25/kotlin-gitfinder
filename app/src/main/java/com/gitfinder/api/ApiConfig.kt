@@ -1,5 +1,6 @@
-package com.gitfinder
+package com.gitfinder.api
 
+import com.gitfinder.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

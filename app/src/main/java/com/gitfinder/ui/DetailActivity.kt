@@ -15,6 +15,7 @@ import com.gitfinder.adapter.SectionPagerAdapter
 import com.gitfinder.adapter.viewmodel.DetailViewModel
 import com.gitfinder.databinding.ActivityDetailBinding
 import com.gitfinder.helper.DateConverter
+import com.gitfinder.helper.Event
 import com.gitfinder.helper.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
@@ -66,17 +67,7 @@ class DetailActivity : AppCompatActivity() {
         }
 
         detailViewModel.errorMsg.observe(this) {msg ->
-            msg.getContentIfNotHandled()?.let {
-                binding.tvErrorDisplay.visibility = View.VISIBLE
-                binding.tvErrorDisplay.text = it
-                val snackbar = Snackbar.make(
-                    window.decorView.rootView,
-                    it,
-                    Snackbar.LENGTH_SHORT
-                )
-                snackbar.anchorView = binding.botView
-                snackbar.show()
-            }
+            setErrorMessage(msg)
         }
 
         if (username != null) {
@@ -117,6 +108,20 @@ class DetailActivity : AppCompatActivity() {
     private fun obtainViewModel(activity: DetailActivity): DetailViewModel {
         val factory = ViewModelFactory.getInstance(activity.application)
         return ViewModelProvider(activity, factory)[DetailViewModel::class.java]
+    }
+
+    private fun setErrorMessage(msg: Event<String>) {
+        msg.getContentIfNotHandled()?.let {
+            binding.tvErrorDisplay.visibility = View.VISIBLE
+            binding.tvErrorDisplay.text = it
+            val snackbar = Snackbar.make(
+                window.decorView.rootView,
+                it,
+                Snackbar.LENGTH_SHORT
+            )
+            snackbar.anchorView = binding.botView
+            snackbar.show()
+        }
     }
 
     companion object {

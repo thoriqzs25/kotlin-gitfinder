@@ -1,6 +1,5 @@
 package com.gitfinder.adapter.rv
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +17,6 @@ class UsersAdapter<T>(
     private val onClickFav: (T) -> Unit
 ) : RecyclerView.Adapter<UsersAdapter<T>.ViewHolder>() {
 
-    private val TAG: String? = "usersadapterthoriq"
     private var favUsers: List<FavoriteUser> = emptyList()
 
     inner class ViewHolder(var binding: UserCardBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -27,7 +25,7 @@ class UsersAdapter<T>(
                 onClickCard(user)
             }
 
-            binding.ivFavorite.setOnClickListener {
+            binding.cvFavorite.setOnClickListener {
                 onClickFav(user)
             }
 

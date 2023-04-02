@@ -10,7 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.gitfinder.*
+import com.gitfinder.R
+import com.gitfinder.UserDetailResponse
 import com.gitfinder.adapter.SectionPagerAdapter
 import com.gitfinder.adapter.viewmodel.DetailViewModel
 import com.gitfinder.databinding.ActivityDetailBinding

@@ -4,19 +4,21 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.gitfinder.*
+import com.gitfinder.R
+import com.gitfinder.SearchResponse
+import com.gitfinder.UserItem
 import com.gitfinder.adapter.rv.UsersAdapter
-import com.gitfinder.adapter.viewmodel.DetailViewModel
-import com.gitfinder.adapter.viewmodel.FavoriteViewModel
 import com.gitfinder.adapter.viewmodel.MainViewModel
 import com.gitfinder.database.FavoriteUser
 import com.gitfinder.databinding.ActivityMainBinding
@@ -26,17 +28,23 @@ import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var appCompatDelegate: AppCompatDelegate
     private lateinit var mainViewModel: MainViewModel
 
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
+    private var isDarkTheme = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         _binding = ActivityMainBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
+
+        appCompatDelegate = AppCompatDelegate.create(this, null)
+        if (savedInstanceState != null) {
+            isDarkTheme = savedInstanceState.getBoolean("isDarkTheme")
+        }
 
         mainViewModel = obtainViewModel(this@MainActivity)
 
@@ -65,8 +73,26 @@ class MainActivity : AppCompatActivity() {
 
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView = binding.searchUser
-
         initializeSearchView(searchView, searchManager)
+
+        binding.cvTheme.setOnClickListener {
+            toggleTheme()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("isDarkTheme", isDarkTheme)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Set the theme icon based on the current theme state
+        if (isDarkTheme) {
+            binding.ivTheme.setImageResource(R.drawable.ic_light_mode)
+        } else {
+            binding.ivTheme.setImageResource(R.drawable.ic_dark_mode)
+        }
     }
 
     override fun onDestroy() {
@@ -153,5 +179,14 @@ class MainActivity : AppCompatActivity() {
                 return false
             }
         })
+    }
+
+    private fun toggleTheme() {
+        isDarkTheme = !isDarkTheme
+        if (isDarkTheme) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
     }
 }

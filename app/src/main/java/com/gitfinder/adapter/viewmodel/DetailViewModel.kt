@@ -10,13 +10,13 @@ import com.gitfinder.UserDetailResponse
 import com.gitfinder.api.ApiConfig
 import com.gitfinder.database.FavoriteUser
 import com.gitfinder.helper.Event
-import com.gitfinder.repository.FavoriteRepository
+import com.gitfinder.repository.MainRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class DetailViewModel(application: Application) : ViewModel() {
-    private val mFavoriteRepository: FavoriteRepository = FavoriteRepository(application)
+    private val mMainRepository: MainRepository = MainRepository(application)
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -34,7 +34,7 @@ class DetailViewModel(application: Application) : ViewModel() {
     val favoriteUsers :LiveData<List<FavoriteUser>> = _favoriteUsers
 
     init {
-        mFavoriteRepository.getFavoriteList().observeForever { favoriteList ->
+        mMainRepository.getFavoriteList().observeForever { favoriteList ->
             _favoriteUsers.value = favoriteList
         }
     }
@@ -112,14 +112,14 @@ class DetailViewModel(application: Application) : ViewModel() {
         return favoriteUsers.value?.any { it.username == username } ?: false
     }
 
-    fun getFavoriteList(): LiveData<List<FavoriteUser>> = mFavoriteRepository.getFavoriteList()
+    fun getFavoriteList(): LiveData<List<FavoriteUser>> = mMainRepository.getFavoriteList()
 
     fun addFavorite(favoriteUser: FavoriteUser) {
-        mFavoriteRepository.addFavorite(favoriteUser)
+        mMainRepository.addFavorite(favoriteUser)
     }
 
     fun removeFavorite(favoriteUser: FavoriteUser) {
-        mFavoriteRepository.removeFavorite(favoriteUser)
+        mMainRepository.removeFavorite(favoriteUser)
     }
 
     companion object {

@@ -4,11 +4,15 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,18 +24,21 @@ import com.gitfinder.adapter.rv.UsersAdapter
 import com.gitfinder.adapter.viewmodel.MainViewModel
 import com.gitfinder.database.FavoriteUser
 import com.gitfinder.databinding.ActivityMainBinding
+import com.gitfinder.datastore.SettingPreferences
 import com.gitfinder.helper.Event
 import com.gitfinder.helper.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appCompatDelegate: AppCompatDelegate
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var pref: SettingPreferences
 
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
-    private var isDarkTheme = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +46,9 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        pref = SettingPreferences.getInstance(dataStore)
+
         appCompatDelegate = AppCompatDelegate.create(this, null)
-        if (savedInstanceState != null) {
-            isDarkTheme = savedInstanceState.getBoolean("isDarkTheme")
-        }
 
         mainViewModel = obtainViewModel(this@MainActivity)
 
@@ -76,22 +82,33 @@ class MainActivity : AppCompatActivity() {
         binding.cvTheme.setOnClickListener {
             toggleTheme()
         }
-    }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean("isDarkTheme", isDarkTheme)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Set the theme icon based on the current theme state
-        if (isDarkTheme) {
-            binding.ivTheme.setImageResource(R.drawable.ic_light_mode)
-        } else {
-            binding.ivTheme.setImageResource(R.drawable.ic_dark_mode)
+        mainViewModel.getThemeSettings().observe(this) { isDarkMode ->
+            if (isDarkMode ) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                binding.ivTheme.setImageResource(R.drawable.ic_light_mode)
+                binding.ivTheme.tag = getString(R.string.dark)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                binding.ivTheme.setImageResource(R.drawable.ic_dark_mode)
+                binding.ivTheme.tag = getString(R.string.light)
+            }
         }
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//        Log.d("mainactivitythoriq", "onResume: ")
+//////        mainViewModel.getThemeSettings().observe(this) { isDarkMode ->
+//////            if (isDarkMode) {
+//////                binding.ivTheme.setImageResource(R.drawable.ic_light_mode)
+//////                binding.ivTheme.tag = getString(R.string.dark)
+//////            } else {
+//////                binding.ivTheme.setImageResource(R.drawable.ic_dark_mode)
+//////                binding.ivTheme.tag = getString(R.string.light)
+//////            }
+//////        }
+//    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -135,7 +152,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun obtainViewModel(activity: MainActivity): MainViewModel {
-        val factory = ViewModelFactory.getInstance(activity.application)
+        val factory = ViewModelFactory.getInstance(activity.application, pref)
         return ViewModelProvider(activity, factory)[MainViewModel::class.java]
     }
 
@@ -180,11 +197,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun toggleTheme() {
-        isDarkTheme = !isDarkTheme
-        if (isDarkTheme) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        val isDarkTheme: Boolean = when (binding.ivTheme.tag) {
+            resources.getString(R.string.dark) -> true
+            resources.getString(R.string.light) -> false
+            else -> throw IllegalArgumentException("Unknown theme tag: ${binding.ivTheme.tag}")
         }
+        mainViewModel.saveThemeSetting(!isDarkTheme)
     }
 }

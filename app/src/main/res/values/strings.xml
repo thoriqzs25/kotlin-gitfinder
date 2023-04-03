@@ -13,4 +13,8 @@
     <string name="resultText">%d  Results, showing %d result</string>
     <string name="list_favorite_anda">List Favorite Anda</string>
     <string name="welcome_aboard">Welcome aboard!</string>
+    <string name="member_since">Member since %s</string>
+    <string name="undefinedName">Undefined No Name</string>
+    <string name="dark">dark</string>
+    <string name="light">light</string>
 </resources>

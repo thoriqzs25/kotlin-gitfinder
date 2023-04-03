@@ -2,20 +2,20 @@ package com.gitfinder.adapter.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.gitfinder.SearchResponse
 import com.gitfinder.api.ApiConfig
 import com.gitfinder.database.FavoriteUser
+import com.gitfinder.datastore.SettingPreferences
 import com.gitfinder.helper.Event
-import com.gitfinder.repository.FavoriteRepository
+import com.gitfinder.repository.MainRepository
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel(application: Application): ViewModel() {
-    private val mFavoriteRepository: FavoriteRepository = FavoriteRepository(application)
+class MainViewModel(application: Application, private val pref: SettingPreferences): ViewModel() {
+    private val mMainRepository: MainRepository = MainRepository(application)
 
     private val _users = MutableLiveData<SearchResponse>()
     val users :LiveData<SearchResponse> = _users
@@ -30,7 +30,7 @@ class MainViewModel(application: Application): ViewModel() {
     val favoriteUsers :LiveData<List<FavoriteUser>> = _favoriteUsers
 
     init {
-        mFavoriteRepository.getFavoriteList().observeForever { favoriteList ->
+        mMainRepository.getFavoriteList().observeForever { favoriteList ->
             _favoriteUsers.value = favoriteList
         }
     }
@@ -67,14 +67,25 @@ class MainViewModel(application: Application): ViewModel() {
         return favoriteUsers.value?.any { it.username == favoriteUser.username } ?: false
     }
 
-    fun getFavoriteList(): LiveData<List<FavoriteUser>> = mFavoriteRepository.getFavoriteList()
+    fun getFavoriteList(): LiveData<List<FavoriteUser>> = mMainRepository.getFavoriteList()
 
     fun addFavorite(favoriteUser: FavoriteUser) {
-        mFavoriteRepository.addFavorite(favoriteUser)
+        mMainRepository.addFavorite(favoriteUser)
     }
 
     fun removeFavorite(favoriteUser: FavoriteUser) {
-        mFavoriteRepository.removeFavorite(favoriteUser)
+        mMainRepository.removeFavorite(favoriteUser)
+    }
+
+    fun getThemeSettings(): LiveData<Boolean> {
+        return pref.getThemeSetting().asLiveData()
+    }
+
+    fun saveThemeSetting(isDarkModeActive: Boolean) {
+        Log.d(TAG, "saveThemeSetting: $isDarkModeActive")
+        viewModelScope.launch {
+            pref.saveThemeSetting(isDarkModeActive)
+        }
     }
 
     companion object {

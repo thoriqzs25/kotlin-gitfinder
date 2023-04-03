@@ -107,8 +107,13 @@ class DetailActivity : AppCompatActivity() {
         val convertedDate = DateConverter().formatDate(dateStr!!)
 
         binding.tvUsername.text = detail.login
-        binding.tvName!!.text = if (detail.name.isNullOrEmpty()) "Undefined No Name" else detail.name
-        binding.tvUsersince.text = "Member since $convertedDate"
+        binding.tvName.text = if (detail.name.isNullOrEmpty()) resources.getString(R.string.undefinedName) else detail.name
+        binding.tvUsersince.text = resources.getString(R.string.member_since, convertedDate)
+        if (detail.email != null) {
+            binding.tvEmail.text = detail.email.toString()
+        } else {
+            binding.tvEmail.visibility = View.GONE
+        }
         binding.ivUserimage.borderColor = resources.getColor(R.color.white)
         binding.ivUserimage.borderWidth = 2
         Glide.with(this)

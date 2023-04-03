@@ -82,7 +82,6 @@ class MainViewModel(application: Application, private val pref: SettingPreferenc
     }
 
     fun saveThemeSetting(isDarkModeActive: Boolean) {
-        Log.d(TAG, "saveThemeSetting: $isDarkModeActive")
         viewModelScope.launch {
             pref.saveThemeSetting(isDarkModeActive)
         }

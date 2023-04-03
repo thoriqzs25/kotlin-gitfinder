@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
+    private var isDataFetched: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +85,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         mainViewModel.getThemeSettings().observe(this) { isDarkMode ->
+            isDataFetched = true
+
             if (isDarkMode ) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 binding.ivTheme.setImageResource(R.drawable.ic_light_mode)
@@ -95,20 +98,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-//    override fun onResume() {
-//        super.onResume()
-//        Log.d("mainactivitythoriq", "onResume: ")
-//////        mainViewModel.getThemeSettings().observe(this) { isDarkMode ->
-//////            if (isDarkMode) {
-//////                binding.ivTheme.setImageResource(R.drawable.ic_light_mode)
-//////                binding.ivTheme.tag = getString(R.string.dark)
-//////            } else {
-//////                binding.ivTheme.setImageResource(R.drawable.ic_dark_mode)
-//////                binding.ivTheme.tag = getString(R.string.light)
-//////            }
-//////        }
-//    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -184,13 +173,18 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(q: String?): Boolean {
-                if (q?.length!! >= 3) {
-                    binding.rvUserList.visibility = RecyclerView.VISIBLE
-                    mainViewModel.searchUsers(q.toString())
-                } else {
+                if (!isDataFetched) {
+                    if (q?.length!! >= 3) {
+                        binding.rvUserList.visibility = RecyclerView.VISIBLE
+                        mainViewModel.searchUsers(q.toString())
+                    }
+                }
+                if (q?.length!! < 3) {
                     binding.rvUserList.visibility = RecyclerView.GONE
                     binding.tvTotalres.text = resources.getString(R.string.search_me_text)
                 }
+
+                isDataFetched = false
                 return false
             }
         })
@@ -200,7 +194,7 @@ class MainActivity : AppCompatActivity() {
         val isDarkTheme: Boolean = when (binding.ivTheme.tag) {
             resources.getString(R.string.dark) -> true
             resources.getString(R.string.light) -> false
-            else -> throw IllegalArgumentException("Unknown theme tag: ${binding.ivTheme.tag}")
+            else -> false
         }
         mainViewModel.saveThemeSetting(!isDarkTheme)
     }

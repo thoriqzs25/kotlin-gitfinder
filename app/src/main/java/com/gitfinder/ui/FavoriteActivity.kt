@@ -75,8 +75,6 @@ class FavoriteActivity : AppCompatActivity() {
                     favoriteUser.htmlUtl = it.htmlUtl!!
 
                     val isAlreadyFav = favoriteViewModel.isFavorite(favoriteUser)
-                    Log.d("favoriteactivitythoriq", "setFavUserList: $isAlreadyFav")
-
                     if (isAlreadyFav) {
                         favoriteViewModel.removeFavorite(favoriteUser)
                     } else {
